@@ -2,6 +2,7 @@ package chaos
 
 import (
 	"context"
+	"sync"
 
 	"github.com/delixfe/zapappender"
 	"go.uber.org/zap/zapcore"
@@ -17,6 +18,7 @@ type BlockingSwitchable struct {
 	enabled bool
 	waiting chan struct{}
 	ctx     context.Context
+	mu      sync.Mutex
 }
 
 func NewBlockingSwitchable(inner zapappender.Appender) *BlockingSwitchable {
@@ -35,10 +37,14 @@ func NewBlockingSwitchableCtx(ctx context.Context, inner zapappender.Appender) *
 }
 
 func (a *BlockingSwitchable) Breaking() bool {
+	a.mu.Lock()
+	defer a.mu.Unlock()
 	return a.enabled
 }
 
 func (a *BlockingSwitchable) Break() {
+	a.mu.Lock()
+	defer a.mu.Unlock()
 	if a.enabled {
 		return
 	}
@@ -47,16 +53,22 @@ func (a *BlockingSwitchable) Break() {
 }
 
 func (a *BlockingSwitchable) Fix() {
+	a.mu.Lock()
+	defer a.mu.Unlock()
 	a.enabled = false
 	close(a.waiting)
 }
 
 func (a *BlockingSwitchable) Write(p []byte, ent zapcore.Entry) (n int, err error) {
-	if a.enabled {
+	a.mu.Lock()
+	enabled := a.enabled
+	waiting := a.waiting
+	a.mu.Unlock()
+	if enabled {
 		select {
 		case <-a.ctx.Done():
 			return 0, a.ctx.Err()
-		case <-a.waiting:
+		case <-waiting:
 		}
 	}
 	n, err = a.primary.Write(p, ent)
