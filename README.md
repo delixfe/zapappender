@@ -1,4 +1,4 @@
-# zapappender
+# zapappender [![Build Status][ci-img]][ci] [![Coverage Status][cov-img]][cov]
 
 Composable appender for uber-go/zap enabling:
 
@@ -37,3 +37,8 @@ logger.Info("this logs async")
 ```
 
 See [example_test.go](example_test.go) for more details.
+
+[ci-img]: https://github.com/delixfe/zapappender/actions/workflows/go.yml/badge.svg
+[ci]: https://github.com/delixfe/zapappender/actions/workflows/go.yml
+[cov-img]: https://codecov.io/gh/delixfe/zapappender/branch/main/graph/badge.svg?token=S4C8RNUGNE
+[cov]: https://codecov.io/gh/delixfe/zapappender
