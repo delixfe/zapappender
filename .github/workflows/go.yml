@@ -39,8 +39,6 @@ jobs:
         run: |
           go mod download
           (cd tools && go mod download)
-          (cd benchmarks && go mod download)
-          (cd zapgrpc/internal/test && go mod download)
 
       - name: Lint
         if: matrix.latest
