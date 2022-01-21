@@ -2,10 +2,11 @@ package chaos
 
 import (
 	"context"
-	"github.com/delixfe/zapappender"
 	"sync/atomic"
 	"testing"
 	"time"
+
+	"github.com/delixfe/zapappender"
 
 	"go.uber.org/zap/zapcore"
 )
@@ -13,9 +14,6 @@ import (
 func TestBlockingSwitchable_Break(t *testing.T) {
 	written := uint32(0)
 	ctx := context.Background()
-	if deadline, ok := t.Deadline(); ok {
-		ctx, _ = context.WithDeadline(context.Background(), deadline)
-	}
 
 	inner := zapappender.NewDelegating(func(p []byte, ent zapcore.Entry) (n int, err error) {
 		atomic.AddUint32(&written, 1)

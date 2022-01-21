@@ -26,7 +26,7 @@ func AsyncMaxQueueLength(length int) AsyncOption {
 }
 
 // AsyncOnQueueNearlyFullForwardTo
-// fallback is wrapped in a Synchronizing appenderw
+// fallback is wrapped in a Synchronizing appender
 func AsyncOnQueueNearlyFullForwardTo(fallback Appender) AsyncOption {
 	return asyncOptionsFunc(func(async *Async) error {
 		if fallback == nil {

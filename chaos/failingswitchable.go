@@ -51,5 +51,5 @@ func (a *FailingSwitchable) Write(p []byte, ent zapcore.Entry) (n int, err error
 }
 
 func (a *FailingSwitchable) Sync() error {
-	return a.Sync()
+	return a.primary.Sync()
 }

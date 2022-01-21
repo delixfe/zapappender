@@ -2,9 +2,10 @@ package zapappender_test
 
 import (
 	"context"
-	"github.com/delixfe/zapappender"
 	"os"
 	"time"
+
+	"github.com/delixfe/zapappender"
 
 	"github.com/delixfe/zapappender/chaos"
 	"go.uber.org/zap"
@@ -50,7 +51,8 @@ func Example_core() {
 }
 
 func ExampleAsync() {
-	ctx, _ := context.WithTimeout(context.Background(), time.Minute)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
 	writer := zapappender.NewWriter(zapcore.Lock(os.Stdout))
 
 	failing := chaos.NewFailingSwitchable(writer)

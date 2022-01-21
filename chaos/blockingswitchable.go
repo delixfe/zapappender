@@ -20,7 +20,7 @@ type BlockingSwitchable struct {
 }
 
 func NewBlockingSwitchable(inner zapappender.Appender) *BlockingSwitchable {
-	return NewBlockingSwitchableCtx(nil, inner)
+	return NewBlockingSwitchableCtx(context.Background(), inner)
 }
 
 func NewBlockingSwitchableCtx(ctx context.Context, inner zapappender.Appender) *BlockingSwitchable {
