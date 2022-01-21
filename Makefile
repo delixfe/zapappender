@@ -64,10 +64,10 @@ bench:
 		go list ./... | xargs -n1 go test -bench=$(BENCH) -run="^$$" $(BENCH_FLAGS) \
 	) &&) true
 
-.PHONY: updatereadme
-updatereadme:
-	rm -f README.md
-	cat .readme.tmpl | go run internal/readme/readme.go > README.md
+#.PHONY: updatereadme
+#updatereadme:
+#	rm -f README.md
+#	cat .readme.tmpl | go run internal/readme/readme.go > README.md
 
 .PHONY: tidy
 tidy:
