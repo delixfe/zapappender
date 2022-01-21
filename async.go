@@ -24,6 +24,10 @@ var ErrAppenderShutdown = errors.New("appender shut down")
 
 var _ SynchronizationAwareAppender = &Async{}
 
+// Async enables asynchronous logging so that the application is not affected by logging back pressure or errors.
+//
+// The queuing is implemented by a buffered channel. A monitoring go routine watches that channel.
+// If the queue nears its capacity, the oldest log entries are discarded or sent to a fallback.
 type Async struct {
 	// only during construction
 	maxQueueLength           int

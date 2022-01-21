@@ -8,18 +8,21 @@ import (
 
 var _ zapcore.Core = &AppenderCore{}
 
-// Appender
-// TODO: decide on variant, especially in regard of pooling
+// Appender is the interface for composable appenders.
+//
+// The Write method receives the zapcore.Entry in addition to the text buffer.
+// This allows appenders access to the fields like Time.
+//
+// Several variants of the interface were analyzed.
 // 1. Write with p, ent, fields
 // 2. Write with p, ent
 // 3. Write with p and a subset of ent
 // A. Append with enc, ent, fields
-
-// Decision: variant 2 - thus variant 3 would also be an option
+//
+// Decision: variant 2 - thus variant 3 would also be an option.
 // - we cannot keep the fields in an async process
 //	- they might hold references that might be already mutated or hinder GC
 // - without fields, we cannot use the Encoder to encode the message
-
 type Appender interface {
 
 	// Write
@@ -83,6 +86,7 @@ func (s *Synchronizing) Synchronized() bool {
 
 var _ zapcore.Core = &AppenderCore{}
 
+// AppenderCore bridges between zapcore and zapappender.
 type AppenderCore struct {
 	zapcore.LevelEnabler
 	enc      zapcore.Encoder
@@ -116,6 +120,7 @@ func (c *AppenderCore) Check(ent zapcore.Entry, ce *zapcore.CheckedEntry) *zapco
 	}
 	return ce
 }
+
 func (c *AppenderCore) Write(ent zapcore.Entry, fields []zapcore.Field) error {
 	buf, err := c.enc.EncodeEntry(ent, fields)
 	if err != nil {
