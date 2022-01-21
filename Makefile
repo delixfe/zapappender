@@ -7,7 +7,7 @@ BENCH_FLAGS ?= -cpuprofile=cpu.pprof -memprofile=mem.pprof -benchmem
 # Directories containing independent Go modules.
 #
 # We track coverage only for the main module.
-MODULE_DIRS = . ./benchmarks ./zapgrpc/internal/test
+MODULE_DIRS = . 
 
 # Many Go tools take file globs or directories as arguments instead of packages.
 GO_FILES := $(shell \
@@ -30,8 +30,9 @@ lint: $(GOLINT) $(STATICCHECK)
 	@$(foreach dir,$(MODULE_DIRS),(cd $(dir) && $(STATICCHECK) ./... 2>&1) &&) true | tee -a lint.log
 	@echo "Checking for unresolved FIXMEs..."
 	@git grep -i fixme | grep -v -e Makefile | tee -a lint.log
-	@echo "Checking for license headers..."
-	@./checklicense.sh | tee -a lint.log
+	# do not check for license headers
+#	@echo "Checking for license headers..."
+#	@./checklicense.sh | tee -a lint.log
 	@[ ! -s lint.log ]
 	@echo "Checking 'go mod tidy'..."
 	@make tidy
