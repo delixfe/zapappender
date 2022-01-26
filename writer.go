@@ -8,6 +8,7 @@ import (
 
 var _ Appender = &Writer{}
 
+// Writer outputs the message to a zapcore.WriteSyncer
 type Writer struct {
 	out zapcore.WriteSyncer
 }

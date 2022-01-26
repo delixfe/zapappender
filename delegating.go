@@ -6,6 +6,7 @@ import (
 
 var _ SynchronizationAwareAppender = &Delegating{}
 
+// Delegating delegates Write and Sync to functions
 type Delegating struct {
 	WriteFn           func(p []byte, ent zapcore.Entry) (n int, err error)
 	SyncFn            func() error

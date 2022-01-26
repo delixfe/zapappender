@@ -13,6 +13,7 @@ var (
 	_ Switchable           = &BlockingSwitchable{}
 )
 
+// BlockingSwitchable allows to block all messages until it is released.
 type BlockingSwitchable struct {
 	primary zapappender.Appender
 	enabled bool
@@ -36,12 +37,14 @@ func NewBlockingSwitchableCtx(ctx context.Context, inner zapappender.Appender) *
 	}
 }
 
+// Breaking returns true if messages are currently blocked.
 func (a *BlockingSwitchable) Breaking() bool {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 	return a.enabled
 }
 
+// Break blocks all messages until Fix is called.
 func (a *BlockingSwitchable) Break() {
 	a.mu.Lock()
 	defer a.mu.Unlock()
@@ -52,6 +55,7 @@ func (a *BlockingSwitchable) Break() {
 	a.waiting = make(chan struct{})
 }
 
+// Fix unblocks the messages.
 func (a *BlockingSwitchable) Fix() {
 	a.mu.Lock()
 	defer a.mu.Unlock()

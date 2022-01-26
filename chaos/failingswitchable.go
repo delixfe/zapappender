@@ -14,6 +14,7 @@ var (
 	_ Switchable           = &FailingSwitchable{}
 )
 
+// FailingSwitchable returns an error on all writes while it is Breaking.
 type FailingSwitchable struct {
 	primary zapappender.Appender
 	enabled bool
@@ -26,14 +27,17 @@ func NewFailingSwitchable(inner zapappender.Appender) *FailingSwitchable {
 	}
 }
 
+// Breaking returns true if FailingSwitchable is set to fail.
 func (a *FailingSwitchable) Breaking() bool {
 	return a.enabled
 }
 
+// Break starts failing messages.
 func (a *FailingSwitchable) Break() {
 	a.enabled = true
 }
 
+// Fix stops failing messages.
 func (a *FailingSwitchable) Fix() {
 	a.enabled = false
 }

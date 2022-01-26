@@ -6,6 +6,7 @@ import (
 
 var _ SynchronizationAwareAppender = &Discard{}
 
+// Discard silently drops all messages
 type Discard struct {
 }
 

@@ -12,7 +12,6 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-// TODO: message structs could be used in general
 type writeMessage struct {
 	// TODO: create a custom []byte buffer instance so we do not need to keep the reference to the pool?
 	buf   *buffer.Buffer

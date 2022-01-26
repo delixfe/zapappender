@@ -7,13 +7,13 @@ import (
 
 var _ SynchronizationAwareAppender = &Fallback{}
 
+// Fallback forwards the message to secondary, if writing to primary returned an error.
+// secondary is wrapped in a Synchronizing appender.
 type Fallback struct {
 	primary   Appender
 	secondary Appender
 }
 
-// NewFallback forwards the message to secondary, if writing to primary returned an error.
-// secondary is wrapped in a Synchronizing zapappender.
 func NewFallback(primary, secondary Appender) *Fallback {
 	return &Fallback{
 		primary:   primary,

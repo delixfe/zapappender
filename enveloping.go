@@ -16,6 +16,9 @@ type EnvelopingFn func(p []byte, ent zapcore.Entry, output *buffer.Buffer) error
 
 var _ SynchronizationAwareAppender = &Enveloping{}
 
+// Enveloping allows to adapt the log message.
+// This can be used to format the message output. That is especially usefull when a format should only
+// be applied to a primary appender but not a fallback one.
 type Enveloping struct {
 	primary Appender
 	envFn   EnvelopingFn
