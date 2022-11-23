@@ -41,10 +41,6 @@ jobs:
           go mod download
           (cd tools && go mod download)
 
-      - name: Lint
-        if: matrix.latest
-        run: make lint
-
       - name: Test
         run: make cover
 
