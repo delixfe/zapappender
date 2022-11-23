@@ -6,6 +6,7 @@ on:
     tags: ['v*']
   pull_request:
     branches: ['*']
+  workflow_dispatch:
 
 jobs:
 
@@ -13,14 +14,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go: ["1.17.x"]
-        include:
-          - go: 1.17.x
-            latest: true
+        go: ["1.17.*", "1.18.*", "1.19.*"]
 
     steps:
       - name: Setup Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
           go-version: ${{ matrix.go }}
 
