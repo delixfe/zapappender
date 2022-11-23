@@ -1,7 +1,3 @@
-export GOBIN ?= $(shell pwd)/bin
-
-GOLINT = $(GOBIN)/golint
-STATICCHECK = $(GOBIN)/staticcheck
 BENCH_FLAGS ?= -cpuprofile=cpu.pprof -memprofile=mem.pprof -benchmem
 
 # Directories containing independent Go modules.
@@ -15,37 +11,15 @@ GO_FILES := $(shell \
 	-o -name '*.go' -print | cut -b3-)
 
 .PHONY: all
-all: lint test
+all: test lint tidy
 
 .PHONY: lint
-lint: $(GOLINT) $(STATICCHECK)
-	@rm -rf lint.log
-	@echo "Checking formatting..."
-	@gofmt -d -s $(GO_FILES) 2>&1 | tee lint.log
-	@echo "Checking vet..."
-	@$(foreach dir,$(MODULE_DIRS),(cd $(dir) && go vet ./... 2>&1) &&) true | tee -a lint.log
-	@echo "Checking lint..."
-	@$(foreach dir,$(MODULE_DIRS),(cd $(dir) && $(GOLINT) ./... 2>&1) &&) true | tee -a lint.log
-	@echo "Checking staticcheck..."
-	@$(foreach dir,$(MODULE_DIRS),(cd $(dir) && $(STATICCHECK) ./... 2>&1) &&) true | tee -a lint.log
-	@echo "Checking for unresolved FIXMEs..."
-	@git grep -i fixme | grep -v -e Makefile | tee -a lint.log
-	# do not check for license headers
-#	@echo "Checking for license headers..."
-#	@./checklicense.sh | tee -a lint.log
-	@[ ! -s lint.log ]
-	@echo "Checking 'go mod tidy'..."
-	@make tidy
-	@if ! git diff --quiet; then \
-		echo "'go mod tidy' resulted in changes or working tree is dirty:"; \
-		git --no-pager diff; \
-	fi
+lint: 
+	@echo "Install golangci-lint"
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $$(go env GOPATH)/bin
 
-$(GOLINT):
-	cd tools && go install golang.org/x/lint/golint
-
-$(STATICCHECK):
-	cd tools && go install honnef.co/go/tools/cmd/staticcheck
+	@echo "Running golangci-lint"
+	golangci-lint run
 
 .PHONY: test
 test:
@@ -72,3 +46,8 @@ bench:
 .PHONY: tidy
 tidy:
 	@$(foreach dir,$(MODULE_DIRS),(cd $(dir) && go mod tidy) &&) true
+
+	@if ! git diff --quiet; then \
+		echo "'go mod tidy' resulted in changes or working tree is dirty:"; \
+		git --no-pager diff; \
+	fi
