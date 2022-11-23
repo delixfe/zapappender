@@ -21,3 +21,6 @@
 *.log
 cover.out
 cover.html
+
+# Codespace build output
+oryxBuildBinary
