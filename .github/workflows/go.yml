@@ -15,6 +15,9 @@ jobs:
     strategy:
       matrix:
         go: ["1.17.*", "1.18.*", "1.19.*"]
+        include:
+          - go: 1.19.*
+            latest: true
 
     steps:
       - name: Setup Go
