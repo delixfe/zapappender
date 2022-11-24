@@ -2,10 +2,12 @@ name: Go
 
 on:
   push:
-    branches: ['*']
+    branches: [ main ]
     tags: ['v*']
   pull_request:
-    branches: ['*']
+    # The branches below must be a subset of the branches above
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
 
@@ -13,14 +15,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go: ["1.17.x"]
+        go: ["1.17.*", "1.18.*", "1.19.*"]
         include:
-          - go: 1.17.x
+          - go: 1.19.*
             latest: true
 
     steps:
       - name: Setup Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
           go-version: ${{ matrix.go }}
 
@@ -34,15 +36,6 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
-
-      - name: Download Dependencies
-        run: |
-          go mod download
-          (cd tools && go mod download)
-
-      - name: Lint
-        if: matrix.latest
-        run: make lint
 
       - name: Test
         run: make cover
