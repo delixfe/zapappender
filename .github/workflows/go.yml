@@ -2,10 +2,11 @@ name: Go
 
 on:
   push:
-    branches: ['*']
+    branches: [ main ]
     tags: ['v*']
   pull_request:
-    branches: ['*']
+    # The branches below must be a subset of the branches above
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
